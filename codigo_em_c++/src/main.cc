@@ -36,13 +36,11 @@ int main(int argc, char **argv) {
 
     // Verifica a escolha do usuário
     if (choice == 1) {
-        // Modo CLI (terminal)
-        std::cout << "Starting in CLI mode...\n";
+        // Modo (terminal)
         shell(&disk); // Chama a função do modo terminal (shell)
     } else if (choice == 2) {
-        // Modo GUI (interface gráfica)
-        std::cout << "Starting in GUI mode...\n";
-        runGUI(fs); // Chama a função da interface gráfica
+        // Modo GUI
+        GRAPHIC_INTERFACE::runGUI(fs); // Chama a função da interface gráfica
     } else {
         // Entrada inválida
         std::cerr << "Invalid choice. Exiting program.\n";
@@ -54,3 +52,5 @@ int main(int argc, char **argv) {
     disk.close();
     return 0; // Retorna sucesso
 }
+
+//exemplos de entrada: ./bin/simplefs resources/image.200 200
