@@ -5,16 +5,24 @@
 #include <string> // Biblioteca para manipulação de strings
 #include <limits> // Necessário para limpar o buffer de entrada
 
+using namespace std;
+
 // Função principal do programa
 int main(int argc, char **argv) {
     // Verifica se o número de argumentos é válido (espera 3 argumentos)
     if (argc != 3) {
-        std::cerr << "Usage: " << argv[0] << " <diskfile> <nblocks>" << std::endl;
+        cerr << "Usage: " << argv[0] << " <diskfile> <nblocks>" << endl;
         return 1; // Retorna erro se os argumentos forem inválidos
     }
 
     // Converte o número de blocos fornecido como argumento para inteiro
-    int nblocks = std::stoi(argv[2]);
+    int nblocks = stoi(argv[2]);
+
+    // O valor de blocos tem que ser no mínimo 3 (1 para superbloco, 1 para inodes, 1 dados)
+    if (nblocks < 2) {
+        std::cerr << "Error: Disk must have at least 2 blocks." << std::endl;
+        return 1;
+    }
 
     // Inicializa o disco com o arquivo e o número de blocos especificados
     Disk disk(argv[1], nblocks);
@@ -23,16 +31,16 @@ int main(int argc, char **argv) {
     INE5412_FS fs(&disk);
 
     // Solicita ao usuário que selecione o modo de operação
-    std::cout << "Select mode of operation:\n";
-    std::cout << "1. Command Line Interface (CLI)\n";
-    std::cout << "2. Graphical User Interface (GUI)\n";
-    std::cout << "Enter your choice (1 or 2): ";
+    cout << "Select mode of operation:\n";
+    cout << "1. Command Line Interface (CLI)\n";
+    cout << "2. Graphical User Interface (GUI)\n";
+    cout << "Enter your choice (1 or 2): ";
 
     int choice; // Armazena a escolha do usuário
-    std::cin >> choice; // Lê a escolha do usuário
+    cin >> choice; // Lê a escolha do usuário
 
     // Limpa o buffer de entrada para evitar problemas com entradas pendentes
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
     // Verifica a escolha do usuário
     if (choice == 1) {
@@ -43,7 +51,7 @@ int main(int argc, char **argv) {
         GRAPHIC_INTERFACE::runGUI(fs); // Chama a função da interface gráfica
     } else {
         // Entrada inválida
-        std::cerr << "Invalid choice. Exiting program.\n";
+        cerr << "Invalid choice. Exiting program.\n";
         disk.close(); // Fecha o disco antes de sair
         return 1; // Retorna erro
     }

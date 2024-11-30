@@ -5,6 +5,8 @@
 #include <string>
 #include <sstream>
 
+using namespace std;
+
 namespace GRAPHIC_INTERFACE { 
 
     void runGUI(INE5412_FS &fs) {
@@ -12,7 +14,7 @@ namespace GRAPHIC_INTERFACE {
 
         sf::Font font;
         if (!font.loadFromFile("resources/arial.ttf")) {
-            std::cerr << "Failed to load font!" << std::endl;
+            cerr << "Failed to load font!" << endl;
             return;
         }
 
@@ -44,7 +46,7 @@ namespace GRAPHIC_INTERFACE {
         sf::Text inputText("", font, 20);
         inputText.setPosition(310, 85);
         inputText.setFillColor(sf::Color::Black);
-        std::string inputBuffer;
+        string inputBuffer;
 
         // Área de saída
         sf::Text output("", font, 20);
@@ -82,7 +84,7 @@ namespace GRAPHIC_INTERFACE {
                         if (fs.fs_mount()) {
                             output.setString("Disk mounted successfully!");
                         } else {
-                            output.setString("Failed to mount disk.");
+                            output.setString(" mount disk.");
                         }
                     } else if (debugButton.isClicked(mousePosition)) {
                         fs.fs_debug();  // Presume-se que fs_debug imprime no console
@@ -90,13 +92,13 @@ namespace GRAPHIC_INTERFACE {
                     } else if (createButton.isClicked(mousePosition)) {
                         int inumber = fs.fs_create();
                         if (inumber >= 0) {
-                            output.setString("File created with inode " + std::to_string(inumber));
+                            output.setString("File created with inode " + to_string(inumber));
                         } else {
                             output.setString("Failed to create file.");
                         }
                     } else if (deleteButton.isClicked(mousePosition)) {
                         try {
-                            int inumber = std::stoi(inputBuffer);
+                            int inumber = stoi(inputBuffer);
                             if (fs.fs_delete(inumber)) {
                                 output.setString("File deleted successfully.");
                             } else {
@@ -120,14 +122,14 @@ namespace GRAPHIC_INTERFACE {
                         cout << "  exit" << endl;
                     } else if (copyinButton.isClicked(mousePosition)) {
                         size_t separator = inputBuffer.find(' ');
-                        if (separator != std::string::npos) {
-                            std::string filename = inputBuffer.substr(0, separator);
-                            int inumber = std::stoi(inputBuffer.substr(separator + 1));
-                            std::ifstream input(filename, std::ios::binary);
+                        if (separator != string::npos) {
+                            string filename = inputBuffer.substr(0, separator);
+                            int inumber = stoi(inputBuffer.substr(separator + 1));
+                            ifstream input(filename, ios::binary);
                             if (input) {
-                                input.seekg(0, std::ios::end);
+                                input.seekg(0, ios::end);
                                 int filesize = input.tellg();
-                                input.seekg(0, std::ios::beg);
+                                input.seekg(0, ios::beg);
 
                                 char *buffer = new char[filesize];
                                 input.read(buffer, filesize);
@@ -137,7 +139,7 @@ namespace GRAPHIC_INTERFACE {
                                 delete[] buffer;
 
                                 if (written == filesize) {
-                                    output.setString("File copied to inode " + std::to_string(inumber));
+                                    output.setString("File copied to inode " + to_string(inumber));
                                 } else {
                                     output.setString("Failed to copy file.");
                                 }
@@ -149,9 +151,9 @@ namespace GRAPHIC_INTERFACE {
                         }
                     } else if (copyoutButton.isClicked(mousePosition)) {
                         size_t separator = inputBuffer.find(' ');
-                        if (separator != std::string::npos) {
-                            int inumber = std::stoi(inputBuffer.substr(0, separator));
-                            std::string filename = inputBuffer.substr(separator + 1);
+                        if (separator != string::npos) {
+                            int inumber = stoi(inputBuffer.substr(0, separator));
+                            string filename = inputBuffer.substr(separator + 1);
 
                             int filesize = fs.fs_getsize(inumber);
                             if (filesize >= 0) {
@@ -159,7 +161,7 @@ namespace GRAPHIC_INTERFACE {
                                 int read = fs.fs_read(inumber, buffer, filesize, 0);
 
                                 if (read == filesize) {
-                                    std::ofstream outputFile(filename, std::ios::binary);
+                                    ofstream outputFile(filename, ios::binary);
                                     outputFile.write(buffer, filesize);
                                     outputFile.close();
                                     output.setString("File saved as " + filename);
@@ -175,10 +177,10 @@ namespace GRAPHIC_INTERFACE {
                         }
                     } else if (catButton.isClicked(mousePosition)) {
                         try {
-                            int inumber = std::stoi(inputBuffer);
+                            int inumber = stoi(inputBuffer);
                             char buffer[Disk::DISK_BLOCK_SIZE];
                             int offset = 0;
-                            std::ostringstream fileContent;
+                            ostringstream fileContent;
 
                             while (int bytes_read = fs.fs_read(inumber, buffer, sizeof(buffer), offset)) {
                                 if (bytes_read < 0) {

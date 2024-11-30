@@ -1,7 +1,9 @@
 #include "../include/button.h"
 
+using namespace std;
 
-Button::Button(const std::string &label, const sf::Font &font, sf::Vector2f position) {
+
+Button::Button(const string &label, const sf::Font &font, sf::Vector2f position) {
     shape.setSize({200, 50});
     shape.setPosition(position);
     shape.setFillColor(sf::Color::Blue);
