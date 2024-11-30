@@ -67,7 +67,6 @@ int INE5412_FS::fs_format() {
         disk->write(i, block.data);
     }
 
-    // mounted = 0;
 
     return 1;
 
@@ -230,13 +229,6 @@ int INE5412_FS::fs_read(int inumber, char *data, int length, int offset) {
             if (indirect_index < 0 || indirect_index >= POINTERS_PER_BLOCK) {
                 std::cerr << "Error: Indirect index " << indirect_index 
                           << " is out of bounds." << std::endl;
-                break;
-            }
-
-            // Verifica se o ponteiro no bloco indireto é válido
-            if (indirect_block.pointers[indirect_index] == 0 || indirect_block.pointers[indirect_index] >= disk->size()) {
-                std::cerr << "Error: Indirect data block " << indirect_block.pointers[indirect_index]
-                          << " is not allocated or out of bounds." << std::endl;
                 break;
             }
 
